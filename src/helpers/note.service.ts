@@ -1,6 +1,6 @@
 import { v4 as uuidV4 } from 'uuid';
 
-import { Tag } from '@shared/models/note.type';
+import { Tag } from '@/shared/models/note.type';
 
 export const noteService = {
   createTag(title: string): Tag[] {

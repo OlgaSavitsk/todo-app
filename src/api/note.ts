@@ -1,4 +1,4 @@
-import { NoteData } from '@shared/models/note.type';
+import { NoteData } from '@/shared/models/note.type';
 import { Base } from './Base';
 
 export class Note extends Base {
