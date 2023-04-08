@@ -1,82 +1,45 @@
-import React, { useMemo, useState } from 'react';
-import { v4 as uuidV4 } from 'uuid';
-import './App.scss';
+import { useEffect, useMemo, useState } from 'react';
 import { HashRouter } from 'react-router-dom';
+
 import NoteList from './components/NoteList/NoteList';
 import SelectTag from './components/SelectTag/SelectTag';
+import { NoteType, NoteData } from './shared/models/note.type';
+import AddNote from './components/AddNote/AddNote';
+import { notesApi } from './api/note';
 import './App.scss';
-
-export type NoteType = {
-  id: string;
-} & NoteData;
-
-export type NoteData = {
-  id: string;
-  title: string | undefined;
-  tags: Tag[];
-};
-
-export type Tag = {
-  id: string;
-  label: string;
-};
 
 function WrappedApp() {
   const [notes, setNotes] = useState<NoteType[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [noteName, setNotesName] = useState('');
 
-  const tags = useMemo(() => {
-    return notes.flatMap((note) => {
-      return note.tags.map((tag: Tag) => tag.label);
-    });
-  }, [notes]);
+  useEffect(() => {
+    async function fetchData() {
+      const data = await notesApi.getNotes();
+      setNotes(data);
+    }
+    fetchData();
+  }, []);
 
-  function createTag(title: string): Tag[] {
-    return title.split(' ').reduce((acc: Tag[], arg) => {
-      if (arg.startsWith('#')) {
-        const tag: string = arg;
-        const newTag = { id: uuidV4(), label: tag };
-        acc.push(newTag);
-      }
-      return acc;
-    }, []);
-  }
-
-  function addNote(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function addNote({ ...data }: NoteData) {
     setNotes((prevNotes) => {
-      return [
-        ...prevNotes,
-        {
-          id: uuidV4(),
-          title: noteName,
-          tags: createTag(noteName),
-        },
-      ];
+      return [...prevNotes, data];
     });
+    await notesApi.createNotes(data);
   }
 
-  function handleDeleteNotes(id: string) {
+  async function handleDeleteNotes(id: string) {
     setNotes(notes.filter((note) => note.id !== id));
+    await notesApi.deleteNotes(id);
   }
 
-  function handleChangeNote(id: string, { title }: NoteData) {
+  async function handleChangeNote(id: string, data: NoteData) {
     setNotes((prevNotes) => {
       return prevNotes.map((note) => {
-        if (note.id === id) {
-          return {
-            ...note,
-
-            id: id,
-            title: title,
-            tags: createTag(title!),
-          };
-        } else {
-          return note;
-        }
+        const updateNote = note.id === id ? data : note;
+        return updateNote;
       });
     });
+    await notesApi.updateNotes(id, data);
   }
 
   function handleChangeTags(data: string[]) {
@@ -92,16 +55,16 @@ function WrappedApp() {
   return (
     <div className="App">
       <div>
-        <h1>Notes</h1>
-        <form onSubmit={addNote}>
-          <input placeholder="Note Title" value={noteName} onChange={(e) => setNotesName(e.target.value)} />
-          <button type="submit">Add</button>
-        </form>
-        <NoteList notes={filteredNotes} onChangeNotes={handleChangeNote} onDeleteNotes={handleDeleteNotes} />
+        <AddNote onAddNote={(data) => addNote(data)} />
+        <NoteList
+          notes={selectedTags ? filteredNotes : notes}
+          onChangeNotes={handleChangeNote}
+          onDeleteNotes={handleDeleteNotes}
+        />
       </div>
       <div>
         <h1>Tags</h1>
-        <SelectTag tags={tags} onChangeTags={handleChangeTags} />
+        <SelectTag notes={notes} onChangeTags={handleChangeTags} />
       </div>
     </div>
   );

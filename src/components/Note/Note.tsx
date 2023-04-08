@@ -1,7 +1,10 @@
 import { Fragment, useRef, useState } from 'react';
 import { Chip } from '@mui/material';
-import { NoteData, NoteType, Tag } from '../../App';
-import '../../App.scss';
+
+import { noteService } from '@/helpers/note.service';
+import { NoteType, NoteData, Tag } from '@/shared/models/note.type';
+import '@/App.scss';
+
 type NoteProps = {
   note: NoteType;
   onDelete: (id: string) => void;
@@ -11,7 +14,6 @@ type NoteProps = {
 function Highlight({ tags, str }: { tags: Tag[]; str: string }): JSX.Element {
   const tagsArr = tags.map((tag: Tag) => tag.label);
   const regExp = new RegExp(`(${tagsArr.join('|')})`, 'ig');
-
   const parts = str.split(regExp);
   return (
     <div className="highlight">
@@ -35,14 +37,14 @@ export function Note({ note, onChange, onDelete }: NoteProps) {
 
   function handleSubmit() {
     setIsEditing(false);
-    onChange({ ...note, title: titleRef.current?.value });
+    const updatedNoteTitle = titleRef.current?.value;
+    onChange({ ...note, title: updatedNoteTitle, tags: noteService.createTag(updatedNoteTitle!) });
   }
 
   return (
     <>
       <div className="container">
         {!isEditing && <Fragment>{note.title!.replace(/#/gi, '')}</Fragment>}
-        {/*  {isEditing && <input ref={titleRef} defaultValue={note.title} />} */}
 
         {isEditing && (
           <Fragment>

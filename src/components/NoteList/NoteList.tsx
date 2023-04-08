@@ -1,4 +1,4 @@
-import { NoteData } from '../../App';
+import { NoteData } from '@/shared/models/note.type';
 import { Note } from '../Note/Note';
 
 type NoteListProps = {

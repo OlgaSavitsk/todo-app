@@ -1,11 +1,20 @@
+import { useMemo } from 'react';
 import { Stack, Autocomplete, Chip, TextField } from '@mui/material';
 
+import { NoteData, Tag } from '@/shared/models/note.type';
+
 type NoteListProps = {
-  tags: string[];
+  notes: NoteData[];
   onChangeTags: (data: string[]) => void;
 };
 
-function SelectTag({ tags, onChangeTags }: NoteListProps) {
+function SelectTag({ notes, onChangeTags }: NoteListProps) {
+  const tags = useMemo(() => {
+    return notes.flatMap((note) => {
+      return note.tags.map((tag: Tag) => tag.label);
+    });
+  }, [notes]);
+
   return (
     <Stack spacing={3} sx={{ width: 500 }}>
       <Autocomplete
@@ -18,8 +27,7 @@ function SelectTag({ tags, onChangeTags }: NoteListProps) {
         }}
         renderTags={(value: readonly string[], getTagProps) =>
           value.map((option: string, index: number) => (
-            // eslint-disable-next-line react/jsx-key
-            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+            <Chip variant="outlined" label={option} {...getTagProps({ index })} key={index} />
           ))
         }
         renderInput={(params) => <TextField {...params} variant="filled" placeholder="Select tag" />}
