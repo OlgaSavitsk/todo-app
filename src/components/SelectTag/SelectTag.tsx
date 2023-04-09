@@ -16,23 +16,26 @@ function SelectTag({ notes, onChangeTags }: NoteListProps) {
   }, [notes]);
 
   return (
-    <Stack spacing={3} sx={{ width: 500 }}>
-      <Autocomplete
-        multiple
-        id="tags-filled"
-        options={[...new Set(tags)]}
-        freeSolo
-        onChange={(event, newValue) => {
-          onChangeTags(newValue);
-        }}
-        renderTags={(value: readonly string[], getTagProps) =>
-          value.map((option: string, index: number) => (
-            <Chip variant="outlined" label={option} {...getTagProps({ index })} key={index} />
-          ))
-        }
-        renderInput={(params) => <TextField {...params} variant="filled" placeholder="Select tag" />}
-      />
-    </Stack>
+    <div>
+      <h1>Tags</h1>
+      <Stack spacing={3} sx={{ width: 500 }}>
+        <Autocomplete
+          multiple
+          id="tags-filled"
+          options={[...new Set(tags)]}
+          freeSolo
+          onChange={(event, newValue) => {
+            onChangeTags(newValue);
+          }}
+          renderTags={(value: readonly string[], getTagProps) =>
+            value.map((option: string, index: number) => (
+              <Chip variant="outlined" label={option} {...getTagProps({ index })} key={index} />
+            ))
+          }
+          renderInput={(params) => <TextField {...params} variant="filled" placeholder="Select tag" />}
+        />
+      </Stack>
+    </div>
   );
 }
 

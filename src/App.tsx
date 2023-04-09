@@ -54,17 +54,16 @@ function WrappedApp() {
 
   return (
     <div className="App">
-      <div>
+      <div className="control-container">
         <AddNote onAddNote={(data) => addNote(data)} />
+        <SelectTag notes={notes} onChangeTags={handleChangeTags} />
+      </div>
+      <div>
         <NoteList
           notes={selectedTags ? filteredNotes : notes}
           onChangeNotes={handleChangeNote}
           onDeleteNotes={handleDeleteNotes}
         />
-      </div>
-      <div>
-        <h1>Tags</h1>
-        <SelectTag notes={notes} onChangeTags={handleChangeTags} />
       </div>
     </div>
   );

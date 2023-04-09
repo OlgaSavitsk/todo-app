@@ -1,5 +1,6 @@
 import { Fragment, useRef, useState } from 'react';
-import { Chip } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardHeader, Chip, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { noteService } from '@/helpers/note.service';
 import { NoteType, NoteData, Tag } from '@/shared/models/note.type';
@@ -38,27 +39,55 @@ export function Note({ note, onChange, onDelete }: NoteProps) {
   function handleSubmit() {
     setIsEditing(false);
     const updatedNoteTitle = titleRef.current?.value;
-    onChange({ ...note, title: updatedNoteTitle, tags: noteService.createTag(updatedNoteTitle!) });
+    onChange({
+      ...note,
+      title: updatedNoteTitle,
+      tags: noteService.createTag(updatedNoteTitle!),
+      createdAt: new Date(),
+    });
   }
 
   return (
     <>
-      <div className="container">
-        {!isEditing && <Fragment>{note.title!.replace(/#/gi, '')}</Fragment>}
+      <Card sx={{ maxWidth: 345 }}>
+        <CardHeader sx={{ textAlign: 'left' }} subheader={noteService.formateDate(note.createdAt)} />
+        <CardContent>
+          {!isEditing && (
+            <Typography sx={{ textAlign: 'left' }} variant="body2" color="text.secondary">
+              {note.title!.replace(/#/gi, '')}
+            </Typography>
+          )}
 
-        {isEditing && (
-          <Fragment>
-            <input ref={titleRef} value={value} onChange={(e) => setValue(e.target.value)} />
-            <Highlight tags={note.tags} str={value!} />
-          </Fragment>
-        )}
-      </div>
-      {!isEditing && <button onClick={() => setIsEditing(true)}>Edit</button>}
-      {isEditing && <button onClick={handleSubmit}>Done</button>}
-      <button onClick={() => onDelete(note.id)}>Delete</button>
-      {note.tags.map((tag) => (
-        <Chip key={tag.id} variant="outlined" label={tag.label} />
-      ))}
+          {isEditing && (
+            <Fragment>
+              <input ref={titleRef} value={value} autoFocus={true} onChange={(e) => setValue(e.target.value)} />
+              <Highlight tags={note.tags} str={value!} />
+            </Fragment>
+          )}
+        </CardContent>
+        <CardContent>
+          <div className="tag-container">
+            {note.tags.map((tag) => (
+              <Chip key={tag.id} variant="outlined" label={tag.label} />
+            ))}
+          </div>
+        </CardContent>
+        <CardActions sx={{ justifyContent: 'flex-end' }}>
+          {!isEditing && (
+            <Button variant="contained" onClick={() => setIsEditing(true)}>
+              Edit
+            </Button>
+          )}
+          {isEditing && (
+            <Button size="small" onClick={handleSubmit}>
+              Save
+            </Button>
+          )}
+          <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => onDelete(note.id)}>
+            Delete
+          </Button>
+        </CardActions>
+      </Card>
     </>
   );
 }

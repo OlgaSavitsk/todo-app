@@ -13,4 +13,9 @@ export const noteService = {
       return acc;
     }, []);
   },
+
+  formateDate(createdDate: Date) {
+    const date = new Date(createdDate);
+    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+  },
 };

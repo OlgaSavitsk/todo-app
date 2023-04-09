@@ -1,5 +1,6 @@
 #root {
   max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -18,6 +19,48 @@
 
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+h1 {
+  text-align: left;
+}
+
+ul {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  row-gap: 20px;
+  column-gap: 20px;
+  max-width: 90vw;
+  list-style-type: none;
+  padding: 0;
+}
+
+.css-nrdprl-MuiTypography-root {
+  font-size: 12px !important;
+}
+
+.tag-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: start;
+  width: 100%;
+  margin-top: 10px;
+
+  span {
+    color: darkblue;
+    outline-color: darkblue;
+  }
+
+}
+
+.control-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 30px;
 }
 
 @keyframes logo-spin {
@@ -54,28 +97,63 @@
   width: 250px;
   height: 2rem;
   position: relative;
+}
 
-  input {
-    width: 100%;
+.css-46bh2p-MuiCardContent-root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 263px;
+  padding: 10px 7px 20px;
+  border-radius: 5px;
+  font-family: "Montserrat", sans-serif;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
+
+  textarea {
+    // width: 100%;
     border: none;
     position: absolute;
     inset: 0;
     z-index: 1;
     outline: none;
-    padding: 0 0.5rem;
-    font-size: 14px;
+    padding: 0 16px;
+    margin: 0;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    letter-spacing: 0.01071em;
+    color: rgba(0, 0, 0, 0.6);
     background: transparent;
     -webkit-text-fill-color: transparent;
   }
 
   .highlight {
-    font-size: 14px;
+    width: 100%;
+    display: flex;
+    //flex-wrap: wrap;
+    margin: 0;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    letter-spacing: 0.01071em;
+    color: rgba(0, 0, 0, 0.6);
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
-    padding: 0 0.5rem;
-    white-space: pre;
+    padding: 0 16px;
+    //white-space: pre;
+    top: 0;
+    display: flex;
+
+     span {
+      display: inline;
+      text-align: left;
+      white-space: pre;
+    }
   }
 
   .green {

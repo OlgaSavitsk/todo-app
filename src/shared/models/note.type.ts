@@ -6,6 +6,7 @@ export type NoteData = {
   id: string;
   title: string | undefined;
   tags: Tag[];
+  createdAt: Date;
 };
 
 export type Tag = {
