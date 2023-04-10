@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Button, Card, CardActions, CardContent, CardHeader, Chip, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -12,14 +12,28 @@ type NoteProps = {
   onChange: (data: NoteData) => void;
 };
 
-function Highlight({ tags, str }: { tags: Tag[]; str: string }): JSX.Element {
+type HighlightProps = {
+  tags: Tag[];
+  str: string;
+  onChange: (data: string) => void;
+};
+
+function Highlight({ tags, str, onChange }: HighlightProps): JSX.Element {
   const tagsArr = tags.map((tag: Tag) => tag.label);
   const regExp = new RegExp(`(${tagsArr.join('|')})`, 'ig');
   const parts = str.split(regExp);
   return (
-    <div className="highlight">
+    <div
+      className="highlight"
+      contentEditable={true}
+      suppressContentEditableWarning={true}
+      ref={(domNode) => {
+        domNode?.focus();
+      }}
+      onInput={(e) => onChange(e.currentTarget.textContent!)}
+    >
       {parts.map((part: string, index: number) =>
-        part.match(regExp) ? (
+        part.match(regExp) && tagsArr.length ? (
           <span className="green" key={index}>
             {part}
           </span>
@@ -34,15 +48,13 @@ function Highlight({ tags, str }: { tags: Tag[]; str: string }): JSX.Element {
 export function Note({ note, onChange, onDelete }: NoteProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(note.title);
-  const titleRef = useRef<HTMLInputElement>(null);
 
   function handleSubmit() {
     setIsEditing(false);
-    const updatedNoteTitle = titleRef.current?.value;
     onChange({
       ...note,
-      title: updatedNoteTitle,
-      tags: noteService.createTag(updatedNoteTitle!),
+      title: value,
+      tags: noteService.createTag(value!),
       createdAt: new Date(),
     });
   }
@@ -60,8 +72,7 @@ export function Note({ note, onChange, onDelete }: NoteProps) {
 
           {isEditing && (
             <Fragment>
-              <input ref={titleRef} value={value} autoFocus={true} onChange={(e) => setValue(e.target.value)} />
-              <Highlight tags={note.tags} str={value!} />
+              <Highlight tags={note.tags} str={note.title!} onChange={(data) => setValue(data)} />
             </Fragment>
           )}
         </CardContent>
